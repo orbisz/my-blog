@@ -1,0 +1,32 @@
+.banner-brand__content{
+  position: absolute;
+  bottom: 8%;
+  right: 3%;
+  max-width:none !important;
+}
+.banner-brand__wrapper {
+  position: relative; /* 关键！为绝对定位元素提供参考容器 */
+}
+.banner-brand__wrapper .banner-brand__content .description {
+  color: #EBEAE8!important;
+  font-size: 26px !important;
+  font-family:cursive;
+
+}
+/* photo */
+.personal-info-wrapper .personal-img{
+  transition: all 2s
+}
+
+.personal-info-wrapper .personal-img:hover{
+  box-shadow: 0 0 26px #8ab6dc;
+  transform: rotate(-360deg);
+}
+.category-item .num{
+  background-image: linear-gradient(145deg, #f8d5c5 0%, #8ed9fc 100%);
+}
+.magic-card .category-item:hover{
+  background-color: #b4c8d9 !important;
+  box-shadow: 0 0 12px #8ab6dc;
+
+}
