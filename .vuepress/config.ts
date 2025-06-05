@@ -7,12 +7,12 @@ export default defineUserConfig({
   title: "orbisz-Blog",
   description: "Carpe diem",
   head: [
-    ['link', { rel: 'icon', href: '/favicon.ico' }]
+    ['link', { rel: 'icon', href: '/favicon1.ico' }]
   ],
   bundler: viteBundler(),
   // bundler: webpackBundler(),
   theme: recoTheme({
-    logo: "/logo.png",
+    logo: "/logo1.jpg",
     author: "orbisz",
     authorAvatar: "/head.jpg",
     docsRepo: "https://github.com/orbisz",
@@ -36,6 +36,18 @@ export default defineUserConfig({
       //  ],
       //},
     ],
+    commentConfig: {
+      type: 'valine',
+      options: {
+        appId: 'JxNf3dIhbSCfRjjUdxdYxX9i-gzGzoHsz', // your appId
+        appKey: '20lD94LhgdhSsNJ4FPYL4Pf8', // your appKey
+        // placeholder: '填写邮箱可以收到回复提醒哦！',
+        //     // verify: true, // 验证码服务
+        //     // notify: true,
+        //     // recordIP: true,
+        //     // hideComments: true // 隐藏评论
+      },
+    },
     // commentConfig: {
     //   type: 'valine',
     //   // options 与 1.x 的 valineConfig 配置一致
