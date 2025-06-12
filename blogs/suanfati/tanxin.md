@@ -78,7 +78,16 @@ categories:
 4.返回结果
 - 根据题目要求返回最终状态值
 
+### 例题
+[打家劫舍](https://leetcode.cn/problems/house-robber/description/?envType=study-plan-v2&envId=top-100-liked)
 
+[完全平方数](https://leetcode.cn/problems/perfect-squares/?envType=study-plan-v2&envId=top-100-liked)
+
+[零钱兑换](https://leetcode.cn/problems/coin-change/?envType=study-plan-v2&envId=top-100-liked)
+
+[乘积最大子数组](https://leetcode.cn/problems/maximum-product-subarray/description/?envType=study-plan-v2&envId=top-100-liked)
+
+[]()
 
 
 **贪心抓眼前，快而不一定最优；
