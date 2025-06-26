@@ -15,7 +15,8 @@ export default defineUserConfig({
     logo: "/logo1.jpg",
     author: "orbisz",
     authorAvatar: "/head.jpg",
-    docsRepo: "https://github.com/orbisz",
+    //docsRepo: "https://github.com/orbisz",
+    //docsRepo: "https://blog.csdn.net/hywzxy",
     docsBranch: "main",
     docsDir: "example",
     lastUpdatedText: "最近更新",
@@ -28,6 +29,8 @@ export default defineUserConfig({
       { text: "标签", link: "/tags/Java/1.html", icon: "Tag" },
       //{ text: '时间轴', link: '/timeline', icon: 'Time' },
       { text: '留言板', link: '/docs/message-board', icon: 'Chat' },
+      { text: 'CSDN', link: 'https://blog.csdn.net/hywzxy', icon:'Blog' },
+      { text: 'Github', link: 'https://github.com/orbisz', icon:'LogoGithub' }
       //{
       //  text: "Docs",
       //  children: [
