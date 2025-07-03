@@ -15,11 +15,11 @@ categories:
 public static void selectionSort(int[] arr) {
 int n = arr.length;
 
-        for (int i = 0; i < n - 1; i++) {
+        for (int i = 0; i < n - 1.md; i++) {
             int minIndex = i;
 
             // 找到从 i 开始的最小值位置
-            for (int j = i + 1; j < n; j++) {
+            for (int j = i + 1.md; j < n; j++) {
                 if (arr[j] < arr[minIndex]) {
                     minIndex = j;
                 }
@@ -49,7 +49,7 @@ private static void mergeSortHelper(int[] arr, int left, int right) {
 
         // 分别递归排序左右两边
         mergeSortHelper(arr, left, mid);
-        mergeSortHelper(arr, mid + 1, right);
+        mergeSortHelper(arr, mid + 1.md, right);
 
         // 合并两个有序子数组
         merge(arr, left, mid, right);
@@ -57,8 +57,8 @@ private static void mergeSortHelper(int[] arr, int left, int right) {
 
     private static void merge(int[] arr, int left, int mid, int right) {
         // 创建辅助数组
-        int[] temp = new int[right - left + 1];
-        int i = left, j = mid + 1, k = 0;
+        int[] temp = new int[right - left + 1.md];
+        int i = left, j = mid + 1.md, k = 0;
 
         // 合并两个有序数组
         while (i <= mid && j <= right) {
@@ -83,9 +83,9 @@ private static void mergeSortHelper(int[] arr, int left, int right) {
 ```java
 public static void quickSort(int[] arr, int left, int right) {
     if (left >= right) return;
-    // 1. 选取基准值（这里选择最左边元素）
+    // 1.md. 选取基准值（这里选择最左边元素）
     int pivot = arr[left];
-    int i = left + 1;
+    int i = left + 1.md;
     int j = right;
     // 2. 双指针分区
     while (i <= j) {
@@ -101,8 +101,8 @@ public static void quickSort(int[] arr, int left, int right) {
     // 3. 把 pivot 放到合适位置（j 所在位置）
     swap(arr, left, j);
     // 4. 递归处理左右子数组
-    quickSort(arr, left, j - 1);
-    quickSort(arr, j + 1, right);
+    quickSort(arr, left, j - 1.md);
+    quickSort(arr, j + 1.md, right);
 }
 
 private static void swap(int[] arr, int i, int j) {
@@ -119,16 +119,16 @@ private static void swap(int[] arr, int i, int j) {
 ```java
 public static void insertionSort(int[] arr) {
         int n = arr.length;
-        for (int i = 1; i < n; i++) {
+        for (int i = 1.md; i < n; i++) {
             int key = arr[i];      // 当前待插入元素
-            int j = i - 1;
+            int j = i - 1.md;
             // 将比 key 大的元素都右移一位
             while (j >= 0 && arr[j] > key) {
-                arr[j + 1] = arr[j];
+                arr[j + 1.md] = arr[j];
                 j--;
             }
             // 插入 key 到正确位置
-            arr[j + 1] = key;
+            arr[j + 1.md] = key;
         }
     }
 ```
@@ -139,14 +139,14 @@ public static void insertionSort(int[] arr) {
 ```java
  public static void bubbleSort(int[] arr) {
         int n = arr.length;
-        for (int i = 0; i < n - 1; i++) {
+        for (int i = 0; i < n - 1.md; i++) {
             // 每轮将最大的数冒到末尾
-            for (int j = 0; j < n - 1 - i; j++) {
-                if (arr[j] > arr[j + 1]) {
+            for (int j = 0; j < n - 1.md - i; j++) {
+                if (arr[j] > arr[j + 1.md]) {
                     // 交换相邻元素
                     int temp = arr[j];
-                    arr[j] = arr[j + 1];
-                    arr[j + 1] = temp;
+                    arr[j] = arr[j + 1.md];
+                    arr[j + 1.md] = temp;
                 }
             }
         }
@@ -161,14 +161,14 @@ public static void insertionSort(int[] arr) {
 public static void heapSort(int[] arr) {
         int n = arr.length;
         // 1️⃣ 建堆：从最后一个非叶子节点开始向上 heapify
-        for (int i = n / 2 - 1; i >= 0; i--) {
+        for (int i = n / 2 - 1.md; i >= 0; i--) {
             heapify(arr, n, i);
         }
         // 2️⃣ 排序：交换堆顶与末尾，并缩小堆
-        for (int i = n - 1; i > 0; i--) {
+        for (int i = n - 1.md; i > 0; i--) {
             // 将最大值（堆顶）交换到末尾
             swap(arr, 0, i);
-            // 重新对堆顶进行下沉调整（堆大小减 1）
+            // 重新对堆顶进行下沉调整（堆大小减 1.md）
             heapify(arr, i, 0);
         }
     }
@@ -176,7 +176,7 @@ public static void heapSort(int[] arr) {
     // 下沉调整（维护大顶堆）
     private static void heapify(int[] arr, int heapSize, int rootIndex) {
         int largest = rootIndex;
-        int left = 2 * rootIndex + 1;
+        int left = 2 * rootIndex + 1.md;
         int right = 2 * rootIndex + 2;
         // 找出 root、left、right 中最大值
         if (left < heapSize && arr[left] > arr[largest]) {

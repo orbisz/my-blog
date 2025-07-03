@@ -22,11 +22,11 @@ export default defineUserConfig({
     lastUpdatedText: "最近更新",
     navbar: [
       { text: "首页", link: "/", icon: "Home" },
-      { text: "分类", link: "/categories/xiangmukaifa/1.html", icon: "Category" },
+      { text: "分类", link: "/categories/xiangmukaifa/1.md.html", icon: "Category" },
       //{ text: "Home", link: "/" },
-      //{ text: "Categories", link: "/categories/reco/1.html" },
-      //{ text: "Tags", link: "/tags/tag1/1.html" },
-      { text: "标签", link: "/tags/Java/1.html", icon: "Tag" },
+      //{ text: "Categories", link: "/categories/reco/1.md.html" },
+      //{ text: "Tags", link: "/tags/tag1/1.md.html" },
+      { text: "标签", link: "/tags/Java/1.md.html", icon: "Tag" },
       //{ text: '时间轴', link: '/timeline', icon: 'Time' },
       { text: '留言板', link: '/docs/message-board', icon: 'Chat' },
       { text: 'CSDN', link: 'https://blog.csdn.net/hywzxy', icon:'Blog' },
@@ -53,7 +53,7 @@ export default defineUserConfig({
     },
     // commentConfig: {
     //   type: 'valine',
-    //   // options 与 1.x 的 valineConfig 配置一致
+    //   // options 与 1.md.x 的 valineConfig 配置一致
     //   options: {
     //     // appId: 'xxx',
     //     // appKey: 'xxx',

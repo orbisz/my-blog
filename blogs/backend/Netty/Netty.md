@@ -127,8 +127,8 @@ Reactor是一种经典的线程模型，基于事件驱动，采用多路复用�
 ## Netty服务端和客户端的启动流程
 ### 服务端
 ```java
-// 1.bossGroup 用于接收连接，workerGroup 用于具体的处理
-EventLoopGroup bossGroup = new NioEventLoopGroup(1);
+// 1.md.bossGroup 用于接收连接，workerGroup 用于具体的处理
+EventLoopGroup bossGroup = new NioEventLoopGroup(1.md);
 EventLoopGroup workerGroup = new NioEventLoopGroup();
 try {
 //2.创建服务端启动引导/辅助类：ServerBootstrap
@@ -170,7 +170,7 @@ workerGroup.shutdownGracefully();
 
 ### 客户端
 ```Java
-    //1.创建一个 NioEventLoopGroup 对象实例
+    //1.md.创建一个 NioEventLoopGroup 对象实例
     EventLoopGroup group = new NioEventLoopGroup();
     try {
         //2.创建客户端启动引导/辅助类：Bootstrap
