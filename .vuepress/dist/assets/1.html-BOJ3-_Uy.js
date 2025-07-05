@@ -1,0 +1,1 @@
+import{_ as t,c as a,o as e}from"./app-CeMi2p67.js";const n={};function o(r,c){return e(),a("div")}const s=t(n,[["render",o]]),l=JSON.parse('{"path":"/tags/dayingxiaopingtaikaifa/1.html","title":"","lang":"en-US","frontmatter":{"layout":"Categories"},"headers":[],"git":{},"filePathRelative":null}');export{s as comp,l as data};
