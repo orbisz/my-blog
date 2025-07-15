@@ -1,8 +1,12 @@
 ---
-title: 拼团交易平台系统开发-学习日志
+title: 基于 Netty 的仿桌面版微信聊天系统-学习日志
 date: 2019/04/09
 tags:
-  - 仿微信IM系统
+   - DDD
+   - 前后端分离
+   - SpringBoot
+   - RabbitMQ
+   - Netty
 categories:
  - 项目开发
 ---

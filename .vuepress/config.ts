@@ -21,16 +21,23 @@ export default defineUserConfig({
     docsDir: "example",
     lastUpdatedText: "最近更新",
     navbar: [
-      { text: "首页", link: "/", icon: "Home" },
-      { text: "分类", link: "/categories/xiangmukaifa/1.md.html", icon: "Category" },
+      { text: "首页", link: "/", icon: "IconHome" },
+      { text: '留言板', link: '/docs/message-board', icon: 'IconChat' },
+      { text: 'CSDN', link: 'https://blog.csdn.net/hywzxy', icon:'IconCSDN' },
+      { text: 'Github', link: 'https://github.com/orbisz', icon:'IconGithub' },
+      {
+        text: "项目体验",
+        children: [
+          { text: "大营销项目体验", link: "http://121.4.26.112.3000" },
+          //{ text: "vuepress-theme-reco", link: "/blogs/other/guide" },
+        ],
+      },
+      //{ text: "分类", link: "/categories/backend", icon: "Category" },
       //{ text: "Home", link: "/" },
       //{ text: "Categories", link: "/categories/reco/1.md.html" },
       //{ text: "Tags", link: "/tags/tag1/1.md.html" },
-      { text: "标签", link: "/tags/Java/1.md.html", icon: "Tag" },
+      //{ text: "标签", link: "/tags/backend/Java", icon: "Tag" },
       //{ text: '时间轴', link: '/timeline', icon: 'Time' },
-      { text: '留言板', link: '/docs/message-board', icon: 'Chat' },
-      { text: 'CSDN', link: 'https://blog.csdn.net/hywzxy', icon:'Blog' },
-      { text: 'Github', link: 'https://github.com/orbisz', icon:'LogoGithub' }
       //{
       //  text: "Docs",
       //  children: [

@@ -2,7 +2,16 @@
 title: 拼团交易平台系统开发-学习日志
 date: 2019/04/09
 tags:
-  - 拼团系统开发
+  - DDD
+  - 前后端分离
+  - 微服务
+  - 分布式
+  - SpringBoot
+  - MyBatis
+  - MySQL
+  - Redis
+  - RabbitMQ
+  - Docker
 categories:
  - 项目开发
 ---

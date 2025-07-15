@@ -3,6 +3,7 @@ title: MyBatis学习总结
 date: 2025/3/28
 tags:
  - 框架
+ - Mybatis
 categories:
  - 后端学习
 ---
