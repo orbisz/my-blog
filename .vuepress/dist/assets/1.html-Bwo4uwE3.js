@@ -1,0 +1,1 @@
+import{_ as r}from"./1.html-Si4zyt5-.js";import"./app-BLZsyjpf.js";const a=JSON.parse('{"path":"/tags/Mybatis/1.html","title":"","lang":"en-US","frontmatter":{"layout":"Categories"},"headers":[],"git":{},"filePathRelative":null}');export{r as comp,a as data};

@@ -1,6 +1,6 @@
 ---
 title: 基于 Netty 的仿桌面版微信聊天系统-学习日志
-date: 2019/04/09
+date: 2025/01/05
 tags:
    - DDD
    - 前后端分离
@@ -8,7 +8,7 @@ tags:
    - RabbitMQ
    - Netty
 categories:
- - 项目开发
+ - 后端开发
 ---
 
 ### **项目名称**：基于 Netty 的仿桌面版微信聊天系统

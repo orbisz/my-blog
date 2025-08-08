@@ -1,6 +1,6 @@
 ---
 title: 拼团交易平台系统开发-学习日志
-date: 2019/04/09
+date: 2025/02/09
 tags:
   - DDD
   - 前后端分离
@@ -13,7 +13,7 @@ tags:
   - RabbitMQ
   - Docker
 categories:
- - 项目开发
+ - 后端开发
 ---
 
 # 拼团交易平台系统

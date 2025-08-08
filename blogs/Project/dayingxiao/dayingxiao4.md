@@ -1,6 +1,6 @@
 ---
-title: 大营销平台-开发总结
-date: 2025/04/09
+title: 幸运营销汇-开发总结
+date: 2025/06/01
 tags:
 - DDD
 - 前后端分离
@@ -12,7 +12,7 @@ tags:
 - RabbitMQ
 - Docker
 categories:
-- 项目
+- 后端开发
 ---
 
 ### 

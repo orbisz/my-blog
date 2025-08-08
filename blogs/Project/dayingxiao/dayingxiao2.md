@@ -1,5 +1,5 @@
 ---
-title: 大营销平台-开发日志-第二阶段
+title: 幸运营销汇-开发日志-第二阶段
 date: 2025/04/09
 tags:
 - DDD
@@ -12,7 +12,7 @@ tags:
 - RabbitMQ
 - Docker
 categories:
-- 项目
+- 后端开发
 ---
 
 ## 注意
