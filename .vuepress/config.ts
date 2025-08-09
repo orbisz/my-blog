@@ -28,7 +28,7 @@ export default defineUserConfig({
       {
         text: "项目体验",
         children: [
-          { text: "大营销项目体验", link: "http://117.72.164.204:3000/?userId=zxy&activityId=100301" },
+          { text: "幸运营销汇", link: "http://117.72.164.204:3000/?userId=zxy&activityId=100301" },
           { text: "Ai-Agent 智能体 ", link: "http://101.43.191.204" },
           //{ text: "vuepress-theme-reco", link: "/blogs/other/guide" },
         ],

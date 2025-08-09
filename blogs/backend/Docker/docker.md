@@ -174,6 +174,7 @@ Mac电脑可以直接在IDEA执行build.sh,windows电脑则需要到build.sh所�
 ```
 bash build.sh
 ```
+![img_10.png](img_10.png)
 ### 推送镜像
 然后在本地的Docker上就可以看到构建的镜像，接着将镜像推送到Docker Hub上
 ![img_6.png](img_6.png)
