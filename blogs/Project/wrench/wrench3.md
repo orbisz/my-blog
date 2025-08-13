@@ -15,8 +15,9 @@ categories:
 ### 流程设计
 ![img_10.png](img_10.png)
 - 增加SPI机制，动态的处理组件的加载，以把动态限流封装成统一的组件给其他业务服务使用。
-- 在使用了AOP切面擦欧总的地方，如 @DCC 直接获取类操作属性要考虑代理类的存在。
+- 在使用了AOP切面插入的地方，如 @DCC 直接获取类操作属性要考虑代理类的存在。
 - RateLimiter 限流，当一个用户频繁访问超过N次后，则会将这个用户加入黑名单列表，不允许在访问当前服务。直至过了超时时间从黑名单列表移走后才允许访问。
+
 ### 程序的串行执行过程
 
 1. @RateLimiterAccessInterceptor注解到需要拦截的方法上
@@ -36,8 +37,11 @@ public @interface RateLimiterAccessInterceptor {
 }
 ```
 
-2. RateLimiterAOP对象拦截所有被@RateLimiterAccessInterceptor注解的方法
-    1. 通过第一节的DCC来动态配置限流组件的状态(打开还是关闭)
+**限流执行流程**
+- 通过 spring.factories 文件中的自动配置项，Spring Boot启动时加载 RateLimiterAutoConfig ，并创建 RateLimiterAOP 切面实例。
+- RateLimiterAOP 中的 @DCCValue("rateLimiterSwitch:open") 注解会从动态配置中心获取限流开关状态。
+- RateLimiterAOP对象拦截所有被@RateLimiterAccessInterceptor注解的方法
+    1. 通过第一节的DCC来动态配置限流组件的状态(打开还是关闭)，通过反射从方法参数中提取用户标识
     2. 执行黑名单过滤, 在黑名单中, 执行注解中的fallbackMethod
     3. 如果该用户不在黑名单中, 则通过令牌桶限流
     4. 如果用户获取令牌失败, 也就是超过了限定的QPS(注解中的permitsPerSecond), 则进行限流

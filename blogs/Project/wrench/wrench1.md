@@ -18,7 +18,7 @@ categories:
 
 ### 流程设计
 ![img_1.png](img_1.png)
-- 使⽤spring starter机制，以SPI的⽅式，实现组件⼊⼜类的注册。启动时会读取 META INF/spring.factories ⽂件⾥配置的类，
+- 使⽤spring starter机制，以SPI的⽅式（通过org.springframework.boot.autoconfigure.EnableAutoConfiguration实现的自动装配，其实知识借鉴了SPI的思想-即基于配置文件动态发现和加载扩展类），实现组件入口类的注册。启动时会读取 META INF/spring.factories ⽂件⾥配置的类，
   完成类的初始化动作。
 - 注册配置会链接 Redis当作注册中心，因为Redis具备存储和发布订阅的功能。初始化动态配置中⼼的服务，以及监听订阅消息。
 - 拦截 Spring 容器实例化的 Bean 对象，找到使⽤了⾃定义注解 @DCCValue 的属性，
@@ -46,18 +46,7 @@ META-INF/spring.factories：SPI入口
       也就是Redis中已经存在这个值的时候, 就不用注入), 已经将所有用DCCValue注解标注的bean对象都用map存储起来。
     - listener调用的服务, 将更新后的Redis中的值注入到程序对应字段中。
 
-#### 2. 程序串行的执行过程
-1. 在启动SpringBoot以后, 所有的Bean对象都会在初始化以后, 执行被我们重写了的`postProcessAfterInitialization(Object bean, String beanName)`, 
-   截获这个对象以后, 执行DynamicConfigCenterService中的`processDCCAnnotations(Object bean)`, 下面是详细的执行过程
-    1. 首先需要解代理(具体的原因在\[项目细节\]里面有), 因为这里的bean对象可能是代理后的对象
-    2. 从解代理以后的class中扫描有没有字段被@DCCValue修饰
-    3. 将DCCValue中的key如果不存在于Redis中, 说明这个字段是第一次被扫描, 这个时候将DCCValue中的默认值存到Redis中. 如果存在则取出来最新的值
-    4. 将步骤3中获取到要注入的值注入到对应的field中
-    5. 将这对key(这里的key是经过了system_attributeName拼接后的), 和对应的原始bean对象存到线程安全Map里面
-2. 在测试程序中我们通过在AutoConfig里面装配的dynamicConfigCenterRedisTopic发布消息
-3. AdjustListener订阅了这个消息, 在监听到消息以后, 执行` dynamicConfigCenterService.adjustAttributeValue(attributeVO)`将值注入到对应的Bean对象中
-    1. 获取key, 从`processDCCAnnotations`存入的dccBeanGroup中读取出来需要的注入的Bean对象
-    2. 更新Redis中的值, 并将这个value注入到对应的field中
+
 
 #### 两大核心流程
 ##### 流程一：启动时，配置会自动注入
@@ -69,9 +58,13 @@ META-INF/spring.factories：SPI入口
 3. 扫描注解: 调⽤ DynamicConfigCenterService 的 proxyObject ⽅法，使⽤反射
    (getDeclaredFields) 扫描当前 Bean 中是否包含 @DCCValue 注解的字段。
 4. 获取与设置值:
+   - 需要解代理(具体的原因在\[项目细节\]里面有), 因为这里的bean对象可能是代理后的对象。
+   - 从解代理以后的class中扫描有没有字段被@DCCValue修饰
    - 解析注解 ("key:defaultValue")，获取配置名 key 和默认值 defaultValue。
    - 根据 key 去 Redis 查询。如果 Redis 中有值，就⽤ Redis 的值；如果没有，就⽤ defaultValue，并把默认值写⼊ Redis。
    - 最终通过反射 (field.set(bean, value)) 将值注⼊到字段中。
+5. 注册映射 ：配置注入完成后，会将配置key和Bean对象的映射关系存入 dccBeanGroup 中
+6. 热更新阶段 ：当配置发生变更时， adjustAttributeValue 方法会通过配置key在 dccBeanGroup 中找到对应的Bean对象，并更新其字段值.即流程二。
 
 ##### 流程二：运行时，配置动态更新
 当线上修改某个配置值时
@@ -82,7 +75,7 @@ META-INF/spring.factories：SPI入口
    后，会⽴即响应。
 3. 调⽤服务: 监听器会调⽤ DynamicConfigCenterService 的 adjustAttributeValue ⽅法更新配置
    - 该方法首先会更新Redis中存储的值
-   - 然后，它会从⼀个内部缓存 (dccBeanGroup) 中找到持有该配置项的那个 Bean 实例。
+   - 然后，它会从`proxyObject`存入的dccBeanGroup中读取出来需要的注入的Bean实例。
    - 最后，再次通过反射直接修改那个在线的、正在运⾏的 Bean 实例的字段值，从⽽实现动态更新。
 
 ### 项目细节
@@ -125,7 +118,7 @@ public static Class<?> getTargetClass(Object candidate) {
 	}
 ```
 所有使用JDK动态代理被代理的类都是继承了TargetSource的, TargetSource继承TargetClassAware, 
-所以能通过检查是不是继承自TargetClassAwar来识别是不是代理类。
+所以能通过检查是不是继承自TargetClassAware来识别是不是代理类。
 
 确定了类是代理类, 通过`TargetClassAware`中的`getTargetClass()`方法获取该代理类的原始类。
 如果这个result为空, 说明是通过CGLIB动态代理的或者压根就没被代理, 如果是CGLIB代理的返回父类, 反之返回本身的类。
@@ -156,10 +149,14 @@ Advised继承自TargetAware, SingletonTargetSource是一种特殊的TargetSource
 - JDK代理众所周知只能代理接口中定义的方法, 如果注解是加在实现类上的, 而不是接口上的, 代理对象就无法访问这些注解
 
 ##### 在CGLIB中
-- CGLib生成的是原始类的子类
-- 虽然会继承父类的注解，但在某些框架处理中仍可能出现问题
+- CGLib生成的是原始类的子类，虽然会继承父类的注解，但在某些框架处理中仍可能出现问题。
+- 若原始类的注解没有被@Inherited标注，那么 CGLIB 生成的子类（代理类）不会继承该注解。
+- 部分框架在处理注解时，会直接获取 “当前对象的实际类型”（即代理类类型）来查找注解，而不是追溯到父类（原始类）。
 
 **所以在注解驱动开发中, 识别类是不是代理类, 并将类回退到原始类是个必要的工作, 防止类因为代理而导致注解丢失**
 
 ##### 多层代理问题
 如果一个类被多层代理, 使用`AopUtils.getTargetClass()`实际上只能获取到"**上一层**"的Class, 而不是最原始的Class, 这个时候就需要使用`AopProxyUtils.ultimateTargetClass()`。这也算是项目中的小bug。
+
+选择Redis作为注册中心，主要是基于Redis的高性能、轻量级特性，以及其提供的发布/订阅机制，这些特性非常适合实现一个轻量级的动态配置中心。
+相比其他注册中心解决方案，Redis在这个特定场景下更加简单高效，能够满足配置存储和动态更新的需求。在实际项目可以根据实际情况选择其他的作为注册中心。

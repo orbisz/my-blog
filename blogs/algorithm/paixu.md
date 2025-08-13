@@ -15,11 +15,11 @@ categories:
 public static void selectionSort(int[] arr) {
 int n = arr.length;
 
-        for (int i = 0; i < n - 1.md; i++) {
+        for (int i = 0; i < n - 1; i++) {
             int minIndex = i;
 
             // 找到从 i 开始的最小值位置
-            for (int j = i + 1.md; j < n; j++) {
+            for (int j = i + 1; j < n; j++) {
                 if (arr[j] < arr[minIndex]) {
                     minIndex = j;
                 }
@@ -49,7 +49,7 @@ private static void mergeSortHelper(int[] arr, int left, int right) {
 
         // 分别递归排序左右两边
         mergeSortHelper(arr, left, mid);
-        mergeSortHelper(arr, mid + 1.md, right);
+        mergeSortHelper(arr, mid + 1, right);
 
         // 合并两个有序子数组
         merge(arr, left, mid, right);
@@ -57,8 +57,8 @@ private static void mergeSortHelper(int[] arr, int left, int right) {
 
     private static void merge(int[] arr, int left, int mid, int right) {
         // 创建辅助数组
-        int[] temp = new int[right - left + 1.md];
-        int i = left, j = mid + 1.md, k = 0;
+        int[] temp = new int[right - left + 1];
+        int i = left, j = mid + 1, k = 0;
 
         // 合并两个有序数组
         while (i <= mid && j <= right) {
@@ -83,9 +83,9 @@ private static void mergeSortHelper(int[] arr, int left, int right) {
 ```java
 public static void quickSort(int[] arr, int left, int right) {
     if (left >= right) return;
-    // 1.md. 选取基准值（这里选择最左边元素）
+    // 1. 选取基准值（这里选择最左边元素）
     int pivot = arr[left];
-    int i = left + 1.md;
+    int i = left + 1;
     int j = right;
     // 2. 双指针分区
     while (i <= j) {
@@ -101,8 +101,8 @@ public static void quickSort(int[] arr, int left, int right) {
     // 3. 把 pivot 放到合适位置（j 所在位置）
     swap(arr, left, j);
     // 4. 递归处理左右子数组
-    quickSort(arr, left, j - 1.md);
-    quickSort(arr, j + 1.md, right);
+    quickSort(arr, left, j - 1);
+    quickSort(arr, j + 1, right);
 }
 
 private static void swap(int[] arr, int i, int j) {
