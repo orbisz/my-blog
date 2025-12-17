@@ -31,3 +31,16 @@ jobs:
     runs-on: ubuntu-latest
     environment: GLM_KEY       # 这里是环境名
 ```
+
+#### AI Agent生成前端工作流
+参考文献：https://mp.weixin.qq.com/s/OECH3QXoNayCFxj7M3qDfw
+1. 建立统一的设计规范，保证稳定的产出原型图
+   ```
+   请你充分理解当前设计规范 @xxx 生成 design-master-prompt.md .遵循 prompt 工程最佳实践。我希望后续通过这个 prompt 让 AI 设计出的组件符合设计规范。我的使用场景比如：------/design-master-prompt 你模拟数据设计一个三栏移动端的商品详情组件,商品可以是某个寿险产品的领取方式. 直接输出 HTML,我们将会进行 POC. 三栏在移动端是三个模块横向排列.你可以生成多个版本, 当你生成后直接打开HTML 供我选择。------
+   如果有任何不清楚的，请你向我确认。
+   ```
+2. 生成 “Design-Master-Prompt”
+   - 将这个 prompt 作为 AI 工具的提示词，让 AI 能根据需求生成符合规范的 HTML 原型。
+3. 将原型压缩为 “运行时生成 Prompt”： 
+   - 将已验证的 HTML 原型转化为 Agent 在生产环境中可复用的 Prompt，用于实时生成同类组件。
+4. Agent 运行时渲染前端组件
