@@ -1143,12 +1143,58 @@ public class OpenAiCodeReview {
 
 ## 发布部署使用
 本节的任务就是让别人可以使用我们开发的SDK，思路是将`jar`放在别人能下载的地方，然后在工作流文件中下载该jar包并执行，这里和作者一样选择放在日志仓库的release中；
+![img_9.png](img_9.png)
 
+将Maven构建的过程改成下载Jar包，这里使用curl或者wget命令下载均可（但是我使用wget不知道为什么一直报错）；
+```yaml
+# 1、Maven构建
+- name: Build with Maven  # 编译构建Maven
+  run: mvn clean install
+
+- name: Copy Openai-Code-Review-SDK JAR  # 复制JAR包
+  run: mvn dependency:copy -Dartifact=com.lz:openai-code-review-sdk:1.0 -DoutputDirectory=./libs
+
+
+# 2、Jar包下载
+# 创建libs目录
+- name: Create libs directory
+  run: mkdir -p ./libs
+
+# 下载SDK-jar包, 注意下载仓库需要为public
+- name: Download openai-code-review-sdk jar
+  run: curl -L -o ./libs/openai-code-review-sdk-1.0.jar https://github.com/Deanccccc/openai-code-review-log/releases/download/v1.0/openai-code-review-sdk-1.0.jar
+```
+然后测试可以实现同样的功能，在之后我们开发自己的项目过程中也可以引入该SDK；
+
+用户提交代码时触发评审，调用基于RAG优化的大模型分析代码差异并生成评审建议，评审结果通过微信公众号推送，评审日志持久化至独立仓库。该系统通过自动化评审辅助人工评审，显著提高了评审的效率与准确性；
+## 功能优化
+- 基于模板设计模式抽象代码评审流程，通过构建Github Action工作流，定义代码检出、AI评审、日志存储及消息触达的自动化链路；
+- 对接DeepSeek API分析代码质量并提供评审建议，实现AI驱动的代码评审流程；
+- 对接RAG知识库，用户上传的文本经过解析、拆分、打标以及向量化后存入向量数据库，通过相似性检索优化LLM提示词生成，有效提高DeepSeek模型评审的上下文感知能力与精准度；
+- 对接微信公众号平台，将代码评审结果通过模板消息及时触达开发人员，提升反馈效率；
+- 该代码评审工具服务上面的抽奖系统设计，显著提高工程代码质量与可靠性；
 ## 扩展与优化
-扩展对接的大模型接口，甚至可以使用开源模型进行私有化部署1.
+### 企业级应用
+开源 LLMs + 领域知识库 + 私有化部署
+- 这里 LLMs 指多个大模型组合使用；大模型再强大也必须结合内部的知识库才能发挥作用；
+- 私有化部署好处是打消各行各业对数据安全的担忧
+- 最终的产品形态需要具体场景具体分析！
+
+扩展对接的大模型接口，甚至可以使用开源模型进行私有化部署.隔离外网访问，确保代码 CR 过程仅在内网环境下完成。
 
 通知对接多个平台，例如飞书、钉钉等
 
 优化提示词，增加提示词模板等等
 
 统一环境配置参数的封装
+
+让 LLM 通过文件代码分析当前代码涉及的知识点，用于后续知识库相似度匹配；对接知识库，使用国产文本相似度计算模型，并私有化部署公司内网，然后存储在向量数据库中。
+>如果使用的模型（如 LLaMA 2）对中文 Prompt 支持较差，需要在设计 Prompt 时采用『输入英文』『输出中文』的方式
+
+大模型基座只包含互联网上的公开数据，对公司内部的框架知识和使用文档并不了解。有了知识库，通过三个过程找到相关度最高的内容：
+1. Text Embeddings（文本向量化） 
+2. Vector Stores（向量存储） 
+3. Similarity Search（相似性搜索）
+
+- [基于大模型 + 知识库的 Code Review 实践](https://juejin.cn/post/7280008213662531599?searchId=20231228182847325B01E439E277406844#heading-6)
+- [适用所有团队研发提效｜带你1分钟上手基于Claude Code的AI代码评审实践](https://mp.weixin.qq.com/s/9seHYBOAfXCsD-WKiR9Bxg)
