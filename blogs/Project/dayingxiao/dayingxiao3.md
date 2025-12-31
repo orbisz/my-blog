@@ -280,3 +280,78 @@ XXL-JOB 是一个轻量级分布式任务调度平台，其核心设计目标是
 算法1；是O(1) 时间复杂度算法，在抽奖活动开启时，将奖品概率预热到本地(Guava)/Redis。如，10%的概率，可以是占了1~10的数字区间，对应奖品A。11~15 对应奖品B。那么在抽奖的时候，直接用生成的随机数通过对 map 进行 get 即可。
 
 算法2；是O(n) ~ O(logn)算法，当奖品概率非常大的时候，达到几十万以上，我们就适合在本地或者 Redis 来初始化这些数据存到 Map 里了。那么这个时候就要把奖品概率，拆分为一个个有限定范围的格子区间。比如 1~7900代表一个奖品、7901~8200代表另外一个奖品，把这些数据存储到 Map<Map<Integer,Integer>,Integer> 在抽奖的时候通过产生的随机值来与这些范围区间依次进行对比。那么为了更好的优化抽奖算法，可以的分别对小范围的进行for循环、中等范围的二分查找、大范围的进行多线程计算。频繁开启多线程的资源也是一种消耗。
+
+### 新增十连抽功能
+#### 后端
+在现有抽奖系统中新增"十连抽"功能，允许用户一次发起10次连续抽奖，要求：
+- 兼容原有单抽逻辑，不破坏现有功能
+- 通过批处理 + 异步并行 + 缓存优化提升性能
+- 保证高并发下的数据一致性和准确性
+
+1. DTO 层 
+   - ActivityTenDrawRequestDTO - 十连抽请求对象
+- ActivityTenDrawResponseDTO - 十连抽响应对象
+2. Domain 层 
+   - UserTenRaffleOrderEntity - 十连抽订单实体
+   - CreateTenPartakeOrderAggregate - 十连抽聚合对象
+3. Redis 常量
+   - Constants.RedisKey.RAFFLE_DAY_COUNT - 每日抽奖次数缓存key前缀
+4. DAO 层
+   - IUserRaffleOrderDao.batchInsert() - 批量插入抽奖订单
+   - IUserAwardRecordDao.batchInsert() - 批量插入中奖记录
+   - 对应的 MyBatis XML 中添加了 <foreach> 批量插入SQL
+5. Service 层
+   - IRaffleActivityPartakeService.createTenDrawOrder() - 十连抽订单创建接口
+   - AbstractRaffleActivityPartake - 添加十连抽抽象模板方法
+   - RaffleActivityPartakeService - 实现十连抽额度校验和订单构建
+   - IAwardService.batchSaveUserAwardRecord() - 批量保存中奖记录
+6. Repository 层
+   - IActivityRepository.saveCreateTenPartakeOrderAggregate() - 批量保存十连抽聚合对象
+   - IAwardRepository.batchSaveUserAwardRecord() - 批量保存中奖记录
+   - ActivityRepository / AwardRepository - 实现对应的批量保存逻辑
+7. API 层
+   - IRaffleActivityService.tenDraw() - 十连抽接口定义
+8. Controller 层
+   - RaffleActivityController.tenDraw() - 十连抽接口实现
+
+
+创建**十连抽参与活动订单聚合对象**`CreateTenPartakeOrderAggregate`，包含用户ID、活动ID、额度信息、抽奖单实体等。
+
+在`IRaffleActivityPartakeService`中添加实现十连抽接口方法，并在`AbstractRaffleActivityPartake`做具体实现
+- 查询活动并进行状态和日期的校验
+- 额度账户过滤&返回账户构建对象（十连抽需要确保至少有10次额度）
+- 构建10个抽奖订单
+- 保存十连抽聚合对象
+
+在`IActivityRepository`中添加批量保存十连抽聚合对象的方法，并在`infrastructure`层做具体实现
+- 数据库路由：`dbRouter.doRouter(userId)`确保同一个用户的所有操作路由到同一个数据库分片，保证数据一致性。
+- 通过编程式事务`transactionTemplate`更新总账户、月账户和日账户（不存在月、日账户则创建），额度不足，则触发异常回滚。
+  - 循环扣减而非批量扣减 ：每次扣减1次，连续10次
+  - CAS机制检查 ：每次更新后检查返回值是否为1，确保每次扣减都成功
+  - 即时失败处理 ：一旦某次扣减失败，立即回滚事务
+- 批量写入10条参与活动订单
+
+在`IAwardService`中添加批量保存中奖记录，在`AwardService`做具体实现
+- 构建消息对象
+- 构建任务对象
+- 构建聚合对象
+- 存储聚合对象，即在一个事务下，保存更新用户的中将记录
+
+在`IAwardRepository`中批量保存用户中奖记录，在`AwardRepository`做具体实现
+- 创建用户奖品记录，任务
+- 在一个事务内写入用户奖品记录，写入任务（发送奖品），更新抽奖单的状态
+- 在一个事务内发送消息，更新task任务表中消息的状态
+
+在 API 层添加十连抽接口，首先在`IRaffleActivityService`添加十连抽接口，并在trigger层做具体实现
+- 参数校验
+- 参与活动 - 创建十连抽订单
+- 抽奖策略 - 并行执行十次单抽
+  - 线程池并发 ：使用 ThreadPoolExecutor 实现真正的并行抽奖，大幅提升性能
+  - Future模式 ：通过 Future<RaffleAwardEntity> 获取异步执行结果
+  - 业务隔离 ：每次抽奖都是独立的业务单元，相互不影响
+- 等待所有抽奖完成并收集结果
+  - 超时控制 ：设置5秒超时避免线程无限等待
+  - 优雅降级 ：单次抽奖失败不影响整体流程，用"未中奖"作为默认值
+- 存放结果 - 批量写入中奖记录
+- 返回结果 json 格式
+
