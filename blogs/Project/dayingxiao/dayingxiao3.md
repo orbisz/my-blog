@@ -289,30 +289,30 @@ XXL-JOB 是一个轻量级分布式任务调度平台，其核心设计目标是
 - 保证高并发下的数据一致性和准确性
 
 1. DTO 层 
-   - ActivityTenDrawRequestDTO - 十连抽请求对象
-- ActivityTenDrawResponseDTO - 十连抽响应对象
+   - `ActivityTenDrawRequestDTO` - 十连抽请求对象
+- `ActivityTenDrawResponseDTO` - 十连抽响应对象
 2. Domain 层 
-   - UserTenRaffleOrderEntity - 十连抽订单实体
-   - CreateTenPartakeOrderAggregate - 十连抽聚合对象
+   - `UserTenRaffleOrderEntity` - 十连抽订单实体
+   - `CreateTenPartakeOrderAggregate` - 十连抽聚合对象
 3. Redis 常量
-   - Constants.RedisKey.RAFFLE_DAY_COUNT - 每日抽奖次数缓存key前缀
+   - `Constants.RedisKey.RAFFLE_DAY_COUNT` - 每日抽奖次数缓存key前缀
 4. DAO 层
-   - IUserRaffleOrderDao.batchInsert() - 批量插入抽奖订单
-   - IUserAwardRecordDao.batchInsert() - 批量插入中奖记录
-   - 对应的 MyBatis XML 中添加了 <foreach> 批量插入SQL
+   - `IUserRaffleOrderDao.batchInsert()` - 批量插入抽奖订单
+   - `IUserAwardRecordDao.batchInsert()` - 批量插入中奖记录
+   - 对应的 MyBatis XML 中添加了`<foreach>`批量插入SQL
 5. Service 层
-   - IRaffleActivityPartakeService.createTenDrawOrder() - 十连抽订单创建接口
-   - AbstractRaffleActivityPartake - 添加十连抽抽象模板方法
-   - RaffleActivityPartakeService - 实现十连抽额度校验和订单构建
-   - IAwardService.batchSaveUserAwardRecord() - 批量保存中奖记录
+   - `IRaffleActivityPartakeService.createTenDrawOrder()` - 十连抽订单创建接口
+   - `AbstractRaffleActivityPartake` - 添加十连抽抽象模板方法
+   - `RaffleActivityPartakeService` - 实现十连抽额度校验和订单构建
+   - `IAwardService.batchSaveUserAwardRecord()` - 批量保存中奖记录
 6. Repository 层
-   - IActivityRepository.saveCreateTenPartakeOrderAggregate() - 批量保存十连抽聚合对象
-   - IAwardRepository.batchSaveUserAwardRecord() - 批量保存中奖记录
-   - ActivityRepository / AwardRepository - 实现对应的批量保存逻辑
+   - `IActivityRepository.saveCreateTenPartakeOrderAggregate()` - 批量保存十连抽聚合对象
+   - `IAwardRepository.batchSaveUserAwardRecord()` - 批量保存中奖记录
+   - `ActivityRepository / AwardRepository` - 实现对应的批量保存逻辑
 7. API 层
-   - IRaffleActivityService.tenDraw() - 十连抽接口定义
+   - `IRaffleActivityService.tenDraw()` - 十连抽接口定义
 8. Controller 层
-   - RaffleActivityController.tenDraw() - 十连抽接口实现
+   - `RaffleActivityController.tenDraw()` - 十连抽接口实现
 
 
 创建**十连抽参与活动订单聚合对象**`CreateTenPartakeOrderAggregate`，包含用户ID、活动ID、额度信息、抽奖单实体等。
@@ -346,8 +346,8 @@ XXL-JOB 是一个轻量级分布式任务调度平台，其核心设计目标是
 - 参数校验
 - 参与活动 - 创建十连抽订单
 - 抽奖策略 - 并行执行十次单抽
-  - 线程池并发 ：使用 ThreadPoolExecutor 实现真正的并行抽奖，大幅提升性能
-  - Future模式 ：通过 Future<RaffleAwardEntity> 获取异步执行结果
+  - 线程池并发 ：使用`ThreadPoolExecutor`实现真正的并行抽奖，大幅提升性能
+  - Future模式 ：通过`Future<RaffleAwardEntity>`获取异步执行结果
   - 业务隔离 ：每次抽奖都是独立的业务单元，相互不影响
 - 等待所有抽奖完成并收集结果
   - 超时控制 ：设置5秒超时避免线程无限等待
