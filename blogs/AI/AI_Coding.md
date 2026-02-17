@@ -78,6 +78,10 @@ User Rule
 
 
 ### Prompt 技巧
+优秀Prompt模板
+- https://cursor.directory/
+- https://github.com/f/awesome-chatgpt-prompts
+
 prompt的质量直接关乎到AI交付结果的质量。在开始使用 AI Coding 之前，是有必要系统学习一下Prompt 技巧，对后续使用效果影响是很大。
 1. 清晰的需求描述：如果一个需求不能描述出来，那么谨慎将任务交给AI，因为你可能获取到的是惊喜，也可能是失望。
    >在中文表达的时候可能存在二义性，可以中英文混合描述来表达需求。
@@ -235,3 +239,4 @@ https://github.com/numman-ali/openskills
 3. [AI Coding后端开发实战：解锁AI辅助编程新范式](https://mp.weixin.qq.com/s/RU9TIveyjPvIXCsoVPp69w)
 4. [AI Coding 长文分享：如何真正把工具用起来，从原理到实践](https://mp.weixin.qq.com/s/MjBVTfo6Kp2RDG6v46_BPA)
 5. [AI coding 智能体设计](https://mp.weixin.qq.com/s/8Dtj7ZSJAWSCoDnlCUKX3Q)
+6. [从传统编程转向大模型编程](https://mp.weixin.qq.com/s/S9XBcdof43MdwYd2tXGl1Q)
