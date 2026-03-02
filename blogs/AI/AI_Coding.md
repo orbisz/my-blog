@@ -7,6 +7,7 @@ tags:
 categories:
  - AI 工具
 ---
+
 ## AI Coding 工具优化开发流程
 ### 提升对话质量参考 1
 **一、 合理划分AI任务边界**
@@ -19,7 +20,7 @@ categories:
 
 **三、 AI生成的方案和代码必须要Review**
 
-除非需求极其清晰，否则不要期望一次命令就能完成一个完整需求，AI认为的完成，有可能并不是实际的完成。一方面可能会因为上下文长度的原因，遗忘，或者产生幻觉。 另外一方面对于项目的了解程度的片面性，生产出来的代码质量或技术方案不够好。
+除非需求极其清晰，否则不要期望一次命令就能完成一个完整需求，AI认为的完成，有可能并不是实际的完成。一方面可能会因为上下文长度的原因，遗忘，或者产生幻觉。 另外一方面对于项目的了解程度的片面性，生产出来的代码质量或技术方案不够好。
 
 **四、 有效管理上下文**
 1. 提供精确信息
@@ -233,6 +234,103 @@ Claude Skills 和 MCP 是可以协同工作的，Claude Skills 为 Agent 提供�
 https://github.com/numman-ali/openskills 
 提供了一个与 Claude 官方近似的实现，思路非常直观，把 skills 写入 AGENTS.md 中，然后 Agent 可以通过`Bash("openskills read pdf")`进行调用，这种方案可以支持 Claude Code 之外的其他 Agent，例如 Qwen Code、Codex 等。
 
+## AI Coding 技术概念
+
+<span style="color:#ff6600">**Command**</span>
+
+通俗理解：Command就是一个快捷方式，将与值得一段提示词发送至对话中。
+
+Command本质上就是一个存放在指定位置的Markdown文件，文件定义了一些配置属性形式，具体包括这个Command的名称以及描述等。
+
+![img_31.png](img_31.png)
+
+配置文件存储可以存储在如下位置，并具有不同的生效范围
+
+![img_30.png](img_30.png)
+
+可以根据日常任务，从中提取一些共性的规则，并将其整理为规范的SOP流程，并使用自然语言进行描述。
+
+<span style="color:#ff6600">**Subagent**</span>
+
+Subagent 是 Claude Code 中专门用于处理特定任务的 AI Agent（有的 Subagent 也定义为处理通用任务），
+每个 Subagent 有自己独立的上下文窗口、系统提示词和工具权限，通过合理使用可以显著改善复杂任务的处理能力。
+简单理解，Claude Code 为自己的主 Agent 配置了多个“工具人”，从关注过程转变为关注结果。
+
+1. 处理更长程任务：在大模型存在上下文长度限制的前提下，Claude Code 尝试将 “大任务拆小任务，把原本只能塞进一个模型上下文里的信息，拆分到多个子上下文中分别处理”，从而在整体上突破单一上下文的实际可用上限，提升能够处理任务的复杂度。
+2. 提升处理效率：Claude Code 可能会同时唤起多个 Subagent 并行处理同一任务，并且将不同的 Subagent 处理结果进行汇聚和总结，从而并发提升任务处理效率。
+3. 专业领域定制：Subagent 支持配置自己独立的提示词、工具清单，可以实现不同专业领域的定制
+   - 自定义提示词，通过 Markdown 描述领域提示词；
+   - 自定义工具清单，限制 Subagent 可以使用的工具清单。
+
+Claude Code 中的 Subagent 由一个配置文件定义，配置文件格式为 Markdown，定义 Subagent 的 Metadata 以及系统提示词。
+
+以下是一个功能定位为 RESTful API 审查的 Subagent 示例，frontmatter 部分包含三个字段作用如下：
+- name：唯一的名称；
+- description：定义 Subagent 的作用，模型根据该内容选择具体的 Subagent 执行任务；
+- tools：定义 Subagent 可以使用的工具清单；
+
+<span style="color:#ff6600">**Skills**</span>
+
+Skill 是 Claude Code 中将专业知识打包成可复用功能的机制，每个 Skill 包含一个 SKILL.md 文件，其中包含 Claude Code 在对应场景时读取的指令。
+
+#### 渐进式披露
+每个 Skill 本质上是一个文件夹，核心是skill.md，里面用结构化方式描述：这个技能叫什么、解决什么任务、需要哪些步骤/脚本/资源，以及调用时应遵循的规则。
+```yaml
+{skill-name}/
+├── SKILL.md          # 必需：主文件，包含 Skill 定义
+├── reference.md      # 可选：详细参考文档
+├── examples.md       # 可选：使用示例
+├── scripts/          # 可选：辅助脚本
+│   └── helper.py
+└── templates/        # 可选：模板文件    
+   └── template.txt
+```
+Claude Code 在对话前会先读取所有 Skill 的名字和简短描述，匹配当前任务是否适合用某个 Skill；
+只有匹配成功时，才按需加载该 Skill 的详细说明和脚本，这就是所谓“渐进式披露”（Progressive Disclosure）。
+![img_33.png](img_33.png)
+#### Skill 是一种 Command
+Claude Code 实际上是将每个 Skill 定义为 Command，因此实际上可以在 TUI 输入框中输入对应的 Slash Command 来实现 Skill 的手工加载。
+从下面的截图中可以看出，Skill 的加载过程与 Command 的执行效果类似，本质上都是把 Skill 预设的提示词放到上下文中。
+
+![img_32.png](img_32.png)
+
+>Claude Code 并没有以 Command 形式展示 Skill，但是支持在输入框中直接唤起，这说明 Claude Code 期望 Skill 的加载不需要用户关注，而是自动加载方式。
+
+#### Agent 可以自动加载 Skill
+Claude Code 实现了一个 Skill 工具，工具的描述定义如下，其中 <available_skills/> 标签包含了可以被加载的 Skill 名称和描述信息，模型会根据这些信息判断何时以及如何调用该工具进行 Skill 加载。
+
+<span style="color:#ff6600">**Hooks**</span>
+
+Hooks 是 Claude Code 提供的接入 Agent 推理循环过程的一种能力，可以支持在 Claude Code 生命周期中的不同阶段执行用户配置的脚本。
+Hooks 为 Claude Code 的行为提供了可预测的确定性，确保某些操作一定会发生，而不是依赖于让大模型自行决定是否运行这些操作。
+
+Claude Code 为多个“生命周期事件”提供 Hook 入口，用户可以在这些事件上添加脚本调用设置。核心是围绕「用户输入 → 工具调用 → Claude 输出与结束」这条链路提供若干标准事件点，目前主要包括如下 8 个关键 Hook 事件点。
+
+![img_34.png](img_34.png)
+
+### 通俗理解
+![img_35.png](img_35.png)
+
+Command：
+- 是 “人” 给 Agent 下达指令
+- 指令通常是 “任务描述” 和 “任务要求”
+
+Subagent：
+- 主 Agent 通过 Task 工具唤起 Subagent “工具人” 工作
+- Subagent 提示词配置的是 “人设描述”、“价值观”
+
+Skills：
+- 主子 Agent 进行工作的 “指导方针” 
+
+CLAUDE.md（AGENTS.md）：
+- 长期记忆文件
+- “价值观”、“红线”、“员工手册”
+
+>用户通过 Command 让 Subagent 加载 Skill 完成某个任务；
+>Subagent 自动判断一个任务需要加载特定 Skill 来完成；多个 Subagent 都可以加载 Skill，如果 Skill 不够通用可以直接设置给 Subagent常用的 Agent；
+> 执行准则可以放到 AGENTS.md 当中
+
+![img_36.png](img_36.png)
 ## 参考文章
 1. [如何用AI Coding和Claude Code提升开发效率？看我的全流程复盘](https://mp.weixin.qq.com/s/6j-MqSrJz5YlKAe2LZW6pg)
 2. [Claude Skills｜将 Agent 变为领域专家](https://mp.weixin.qq.com/s/bwFGcomH6BfkBzhFMiiH1g)
