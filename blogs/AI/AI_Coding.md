@@ -111,6 +111,11 @@ prompt的质量直接关乎到AI交付结果的质量。在开始使用 AI Codin
 - 工具调用后的Token累积：cursor 接收用户信息后开始调用 tools 获取更为详细的信息，并为问题回答做准备：总 Token = 初始输入 + 所有工具调用结果
 
 ## Claude Code使用经验
+
+Claude Code 是 Anthropic 推出的命令行工具，专为 **Agentic Coding（代理式编程）** 而生。与传统的代码补全插件（如 Copilot）不同，它不仅是辅助，更是一个能理解意图、自主规划、执行命令并闭环修复错误的"AI 结对程序员"。
+
+其核心设计哲学是"刻意低级且不强加观点"——它不强制你遵循特定流程，而是提供最原始的模型访问权限，让你像搭积木一样构建自己的开发流。
+
 Claude Code本质上是由一个主模型搭配15个专用工具组成的智能体系统。其工具集主要包括：
 - 任务列表管理
 - 文件编辑功能
@@ -118,20 +123,40 @@ Claude Code本质上是由一个主模型搭配15个专用工具组成的智能�
 - 内容查找（Grep、Glob）
 - Web搜索能力
 
+### 夯实基础：自定义开发环境
+
+#### 权限与工具管理
+默认情况下，Claude 执行敏感操作（如写文件、Git 提交）需要逐一授权。
+
+**白名单化**：使用 `/permissions` 命令或编辑 `.claude/settings.json`，将 `Edit`、`git commit` 等高频且你信任的操作加入白名单，大幅减少交互中断，实现"沉浸式编程"。
+
+**GitHub集成**：强烈建议安装 `gh` CLI。Claude 能够直接调用它来创建 PR、读取 Issue 或处理 Code Review 评论。
+
 ### 常用指令
 #### 常用启动参数(启动前）
 - `--dangerously-skip-permissions`：允许 Claude Code 无需询问权限直接执行操作
 - `--continue`：继续上一次的工作会话
+- `-p "指令"`：无头模式，可在 CI/CD 或脚本中调用，如 `claude -p "prompt" --output-format stream-json`
+
 #### 常用交互指令（启动后）
 - `/memory`：直接编辑记忆，也可通过 # 命令追加记忆
 - `/mcp`：查看当前 MCP 工作状态
 - `/compact`：压缩上下文（当上下文达到 95% 时会自动启动，但建议主动管理）
 - `/clean`：清除上下文
 - `/resume`：查看历史记录
+- `/permissions`：管理权限白名单
 
 - 可以安装的扩展工具：`ccusage`：查看claude code的模型使用量
 - 实时查看消耗:`ccusage blocks--live`
 ### 使用建议
+
+#### 自定义斜杠命令
+对于重复性的复杂任务，可以在 `.claude/commands` 目录中创建 Markdown 模板，将其固化为命令。
+
+**示例**：创建一个 `/fix-issue $ARGUMENTS` 命令。
+
+**效果**：输入 `/fix-issue 1024`，Claude 自动执行：`查看 Issue -> 搜索代码 -> 编写修复 -> 运行测试 -> 提交 PR` 的全套流程。
+
 #### 构建项目的rules和workflow
 通过/init指令，可以让Claude Code扫描整个工程，了解项目结构，并将结果写入CLAUDE.md文件。
 
@@ -167,6 +192,73 @@ Claude Code可以扩展一些工具，增加他的能力，但是不建议过多
 - Context7 MCP：能够从源代码直接提取最新、特定版本的文档和代码示例，并将其直接放入prompt中。https://github.com/upstash/context7
 - Figma Dev Mode MCP：实现交互稿像素级还原，MasterGO也有类似功能。注意点：Figma的源码文件往往很长，建议逐个模块选中，让AI实现。https://help.figma.com/hc/en-us/articles/32132100833559-Guide-to-the-Dev-Mode-MCP-Server
 - Browse use MCP：配合工作流，完成前端研发后，让Claude Code查看浏览器中的实际表现
+
+### 实战工作流模式
+
+#### 1. 探索-规划-执行模式
+适用于需求模糊或复杂的场景。
+
+- **Explore**：让 Claude 阅读文件、日志或 URL，明确告诉它"先阅读，暂时不要写代码"。
+- **Plan**：使用 "think" 关键词触发深度思考模式，让它输出详细的实施计划。
+- **Code**：你确认计划无误后，再让它动手实现。
+- **Verify**：让它自己运行测试或检查代码。
+
+#### 2. 测试驱动开发 (TDD)
+AI 编程中最稳健、幻觉最少的模式。
+
+- **写测试**：让 Claude 基于需求编写测试用例（此时不写实现代码）。
+- **红灯**：运行测试，确认失败（确保测试有效）。
+- **绿灯**：让 Claude 编写代码，直到测试通过。
+- **重构**：在测试的保护下，让 Claude 优化代码结构。
+
+#### 3. 视觉迭代模式
+适用于前端开发。
+
+- **投喂**：截图、拖拽设计图给 Claude。
+- **实现**：让 Claude 写代码。
+- **反馈**：截图运行结果发回给 Claude，让它对比差异并修正。
+
+#### 4. 代码库问答
+新入职或接手"屎山"代码时的神器。
+
+- "日志系统是怎么工作的？"
+- "这个 `Async` 函数在第 134 行是做什么的？"
+
+Claude 会自动 `grep`、读取文件并总结答案，大大降低认知负荷。
+
+#### 5. Git/GitHub 自动化
+让 Claude 成为你的 Release Manager。
+
+- "分析刚才的修改，写一个 Commit Message。"
+- "查看 Issue #123，分析原因并修复，然后提一个 PR。"
+- "解决这个 Rebase 冲突。"
+
+### 进阶技巧
+
+#### 多实例协作 (Multi-Claude)
+不要让一个 Claude 处理所有事情：
+
+- **AB角色**：一个写代码，另一个在独立终端中负责审查或写测试。
+- **Git Worktrees**：在不同的目录中检出不同分支，同时开启多个 Claude 实例处理不相关的 Feature，互不干扰。
+
+#### 无头模式 (Headless Mode)
+将 Claude 集成到脚本或 CI/CD 中。
+
+使用 `claude -p "指令"` 可以在 CI/CD 或脚本中调用 Claude。
+
+**场景**：自动 Issue 分类、代码风格检查 (Linting)、大规模数据迁移脚本生成。
+
+#### 清单与草稿板
+对于超长任务（如重构 100 个文件）：
+
+- 让 Claude 先生成一个 Markdown Checklist。
+- 每完成一项，让它勾选一项。这能有效防止上下文丢失导致的"甚至忘了自己在干嘛"。
+
+#### 路线纠偏与上下文管理
+
+- **及时中断**：按 `Esc` 键中断 Claude 的错误尝试，保留上下文并重定向。
+- **历史回溯**：双击 `Esc` 编辑之前的提示词，探索不同路径。
+- **保持专注**：任务切换时使用 `/clear` 重置上下文，防止无关信息干扰 AI 判断。
 
 ### Claude Skills
 Claude Skills 是一种基于文件系统的、可复用的知识包，运行在 Claude 的沙盒虚拟机（VM）环境中，用于向 Agent 注入流程化、确定性的内部知识（SOP）的标准化方案。

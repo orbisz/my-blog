@@ -1198,3 +1198,4 @@ public class OpenAiCodeReview {
 
 - [基于大模型 + 知识库的 Code Review 实践](https://juejin.cn/post/7280008213662531599?searchId=20231228182847325B01E439E277406844#heading-6)
 - [适用所有团队研发提效｜带你1分钟上手基于Claude Code的AI代码评审实践](https://mp.weixin.qq.com/s/9seHYBOAfXCsD-WKiR9Bxg)
+- [给“氛围编程”系上安全带：阿里集团 AI 代码评审实践与 Benchmark 开源](https://mp.weixin.qq.com/s/6Su8G1WiB4vZWGmzOD_RqQ)
