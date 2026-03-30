@@ -658,12 +658,6 @@ https://github.com/numman-ali/openskills
 提供了一个与 Claude 官方近似的实现，思路非常直观，把 skills 写入 AGENTS.md 中，然后 Agent 可以通过 `Bash("openskills read pdf")` 进行调用，这种方案可以支持 Claude Code 之外的其他 Agent，例如 Qwen Code、Codex 等。
 
 
-### Claude Code 好用插件/工具
-1. Rust Token Killer: https://github.com/rtk-ai/rtk, 节省成本
-2. Superpowers: https://github.com/obra/superpowers, 专为 AI 编程 Agent 设计的完整软件开发工作流框架
-3. OpenSpec: https://github.com/Fission-AI/OpenSpec, 规格驱动开发
-
-
 
 ## AI Coding 技术概念
 
@@ -763,6 +757,45 @@ CLAUDE.md（AGENTS.md）：
 
 ![img_36.png](img_36.png)
 
+## Claude code 完整的工程化布局参考
+
+```text
+Project/
+├── CLAUDE.md
+├── .claude/
+│   ├── rules/
+│   │   ├── core.md
+│   │   ├── config.md
+│   │   └── release.md
+│   ├── skills/
+│   │   ├── runtime-diagnosis/     # 统一收集日志、状态和依赖
+│   │   ├── config-migration/      # 配置迁移回滚防污
+│   │   ├── release-check/         # 发布前校验、smoke test
+│   │   └── incident-triage/       # 线上故障分诊
+│   ├── agents/
+│   │   ├── reviewer.md
+│   │   └── explorer.md
+│   └── settings.json
+└── docs/
+    └── ai/
+        ├── architecture.md
+        └── release-runbook.md
+
+```
+
+通过开源Skill项目 `tw93/claude-health`，可以一键检查你的 Claude Code 配置现在处于什么状态。
+```bash
+npx skills add tw93/claude-health
+```
+
+### Claude Code 好用插件/工具/Skill
+1. Rust Token Killer: https://github.com/rtk-ai/rtk, 节省成本
+2. Superpowers: https://github.com/obra/superpowers, 专为 AI 编程 Agent 设计的完整软件开发工作流框架
+3. OpenSpec: https://github.com/Fission-AI/OpenSpec, 规格驱动开发
+4. claude-health: https://github.com/tw93/claude-health, 配置健康检查 Skill
+
+装好之后在任意会话里跑 `/health`，它会自动识别项目复杂度，对 `CLAUDE.md`、`rules`、`skills`、`hooks`、`allowedTools` 和实际行为模式各跑一遍检查，输出一份优先级报告：需要立刻修 / 结构性问题 / 可以慢慢做。
+
 ## 参考文章
 1. [如何用AI Coding和Claude Code提升开发效率？看我的全流程复盘](https://mp.weixin.qq.com/s/6j-MqSrJz5YlKAe2LZW6pg)
 2. [Claude Skills｜将 Agent 变为领域专家](https://mp.weixin.qq.com/s/bwFGcomH6BfkBzhFMiiH1g)
@@ -771,3 +804,4 @@ CLAUDE.md（AGENTS.md）：
 5. [AI coding 智能体设计](https://mp.weixin.qq.com/s/8Dtj7ZSJAWSCoDnlCUKX3Q)
 6. [从传统编程转向大模型编程](https://mp.weixin.qq.com/s/S9XBcdof43MdwYd2tXGl1Q)
 7. [AI 编程效率提升指南：优化提示词，实现 AI 辅助编码高质量输出](https://articles.zsxq.com/id_p2umki6xnmca.html)
+8. [你不知道的 Claude Code：架构、治理与工程实践](https://tw93.fun/2026-03-12/claude.html)
