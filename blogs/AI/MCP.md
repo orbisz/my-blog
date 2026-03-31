@@ -6,7 +6,7 @@ tags:
  - AI Agent
  - MCP
 categories:
- - AI Agent 学习日志
+ - AI Concept
 ---
 
 ## MCP

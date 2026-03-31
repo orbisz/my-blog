@@ -5,7 +5,7 @@ tags:
  - AI
  - Transformer
 categories:
- - AI Agent 学习日志
+ - AI Concept
 ---
 
 Transformer 是第一个完全依赖自注意力（self-attention）来计算输入和输出的表示，而不使用序列对齐的递归神经网络或卷积神经网络的转换模型。

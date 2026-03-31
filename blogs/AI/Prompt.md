@@ -6,7 +6,7 @@ tags:
  - AI Agent
  - Prompt OR Context
 categories:
- - AI Agent 学习日志
+ - AI Concept
 ---
 
 ## Prompt OR Context
