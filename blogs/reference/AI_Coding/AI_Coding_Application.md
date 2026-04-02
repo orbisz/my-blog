@@ -621,6 +621,11 @@ npx skills add tw93/claude-health
 2. Superpowers: https://github.com/obra/superpowers, 专为 AI 编程 Agent 设计的完整软件开发工作流框架
 3. OpenSpec: https://github.com/Fission-AI/OpenSpec, 规格驱动开发
 4. claude-health: https://github.com/tw93/claude-health, 配置健康检查 Skill
+5. UI UX Pro Max: https://github.com/nextlevelbuilder/ui-ux-pro-max-skill, 专业 UI/UX 设计智能 Skill
+6. Everything Claude Code: https://github.com/affaan-m/everything-claude-code, 定制的AI 开发框架
+7. sanyuan-skills: https://github.com/sanyuan0704/sanyuan-skills, 面向生产环境的 Claude Code 技能集合
+8. Web Access: https://github.com/eze-is/web-accesse, 让 Claude Code 能自主浏览网页、操作动态页面，并且跨会话积累站点经验
+9. skill-creator: https://github.com/anthropics/skills/tree/main/skills/skill-creator, 创建、修改和优化 Skill。
 
 装好之后在任意会话里跑 `/health`，它会自动识别项目复杂度，对 `CLAUDE.md`、`rules`、`skills`、`hooks`、`allowedTools` 和实际行为模式各跑一遍检查，输出一份优先级报告：需要立刻修 / 结构性问题 / 可以慢慢做。
 
