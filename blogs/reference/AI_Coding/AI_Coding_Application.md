@@ -587,6 +587,7 @@ Claude 会自动 `grep`、读取文件并总结答案，大大降低认知负荷
 
 ## Claude code 完整的工程化布局参考
 
+### tw93
 ```text
 Project/
 ├── CLAUDE.md
@@ -615,8 +616,65 @@ Project/
 ```bash
 npx skills add tw93/claude-health
 ```
+### 阿里云
+```text
+code_copilot/
+├── rules/                      # Project Rules（始终生效）
+│   ├── project-context.md      #   工程结构、分层、核心依赖
+│   ├── coding-style.md         #   编码规范
+│   ├── security.md             #   安全红线
+│   └── domain-rules.md         #   业务领域约束
+│
+├── knowledge/                  # 领域知识（按需加载）
+│   ├── index.md                #   知识索引（触发关键词 + 描述）
+│   └── *.md                    #   详细知识文档
+│
+├── agents/                     # Agent 配置与提示词
+│   ├── copilot-prompt.md       #   实际提示词（AI 动态加载，可迭代）
+│   ├── spec-reviewer.md        #   Spec 合规审查 Agent
+│   └── code-quality-reviewer.md #  代码质量审查 Agent
+│
+├── changes/                    # 变更管理
+│   ├── templates/              #   模板（spec / tasks / log，可迭代）
+│   └── <change-name>/          #   每个需求一个目录
+│
+└── archives/                   # 已完成变更的归档
+```
 
-### Claude Code 好用插件/工具/Skill
+### OpenAI Harness
+```text
+AGENTS.md
+ARCHITECTURE.md
+docs/
+├── design-docs/
+│   ├── index.md
+│   ├── core-beliefs.md
+│   └── ...
+├── exec-plans/
+│   ├── active/
+│   ├── completed/
+│   └── tech-debt-tracker.md
+├── generated/
+│   └── db-schema.md
+├── product-specs/
+│   ├── index.md
+│   ├── new-user-onboarding.md
+│   └── ...
+├── references/
+│   ├── design-system-reference-llms.txt
+│   ├── nixpacks-llms.txt
+│   ├── uv-llms.txt
+│   └── ...
+├── DESIGN.md
+├── FRONTEND.md
+├── PLANS.md
+├── PRODUCT_SENSE.md
+├── QUALITY_SCORE.md
+├── RELIABILITY.md
+└── SECURITY.md
+```
+
+## Claude Code 好用插件/工具/Skill
 1. Rust Token Killer: https://github.com/rtk-ai/rtk, 节省成本
 2. Superpowers: https://github.com/obra/superpowers, 专为 AI 编程 Agent 设计的完整软件开发工作流框架
 3. OpenSpec: https://github.com/Fission-AI/OpenSpec, 规格驱动开发
@@ -625,7 +683,8 @@ npx skills add tw93/claude-health
 6. Everything Claude Code: https://github.com/affaan-m/everything-claude-code, 定制的AI 开发框架
 7. sanyuan-skills: https://github.com/sanyuan0704/sanyuan-skills, 面向生产环境的 Claude Code 技能集合
 8. Web Access: https://github.com/eze-is/web-accesse, 让 Claude Code 能自主浏览网页、操作动态页面，并且跨会话积累站点经验
-9. skill-creator: https://github.com/anthropics/skills/tree/main/skills/skill-creator, 创建、修改和优化 Skill。
+9. skill-creator: https://github.com/anthropics/skills/tree/main/skills/skill-creator, 创建、修改和优化 Skill
+10. ccstatusline: https://github.com/sirmalloc/ccstatusline, 高度可定制的 Claude Code CLI 状态栏工具
 
 装好之后在任意会话里跑 `/health`，它会自动识别项目复杂度，对 `CLAUDE.md`、`rules`、`skills`、`hooks`、`allowedTools` 和实际行为模式各跑一遍检查，输出一份优先级报告：需要立刻修 / 结构性问题 / 可以慢慢做。
 
