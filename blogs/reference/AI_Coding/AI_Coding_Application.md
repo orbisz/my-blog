@@ -2,10 +2,10 @@
 title: AI Coding 实践指南与 Claude Code 使用案例
 date: 2025/11/13
 tags:
-  - AI
+  - AI 工具
   - AI Coding
 categories:
- - AI 工具
+ - reference
 ---
 
 ## AI Coding 工具优化开发流程
@@ -162,7 +162,7 @@ User Rule
 ```
 
 ✅ 优化示例：
-```
+```text
 # 任务：为现有的活动列表接口增加一个按"邀请任务"类型过滤的功能。
 
 # 上下文：
@@ -173,8 +173,7 @@ User Rule
 1. 在 FrontComponentController 类的 getActivityList 方法中新增 taskType 参数，取值范围参考 TaskTypeEnum。
 2. 若 taskType 为 16，则根据 taskType 查询关联活动 ID 集合，并过滤返回结果。
    2.1 查询逻辑：从 task_info 表查询 task_type 字段，通过 activity_task_rel 表关联 task_id 和 activity_id。使用 TaskInfoService 和 ActivityTaskRelService 实现查询。
-3. 最终与现有 List<GetActivityListVO> 取交集。
-4. 若 taskType 为空，保留原逻辑。
+3. 若 taskType 为空，保留原逻辑。
 ```
 
 应用该提示词后，AI 生成的代码逻辑完整度很高，基本覆盖了 95%以上的需求点，只需少量微调即可进入测试阶段。
@@ -204,7 +203,6 @@ User Rule
 代码审查示例：
 ```
 请审查以下Java代码的潜在问题，并严格按照以下Markdown格式输出：
-
 ## 发现的问题
 ### 问题1：[问题简述]
 - **严重程度：** 高/中/低
@@ -212,18 +210,13 @@ User Rule
 - **原因分析：** [详细说明]
 
 ## 修复建议
-```java
 // 修复后的代码示例
-```
-
 ## 预防措施
 [如何避免类似问题]
 
 [粘贴代码]
-```
 
 详细设计模板：
-```
 基于提供的[需求描述]和[原型图片链接]，输出 Markdown 格式的详细设计。
 
 模板：
@@ -288,7 +281,7 @@ User Rule
    - 查询逻辑：task_info 表中 task_type 字段；activity_task_rel 表关联 task_id（对应 task_info.id）和 activity_id。
    - 使用 com.xxx.service.task.ActivityTaskRelService 和 com.xxx.service.task.TDesTaskInfoService。
    - 在合适 service 中编写查询逻辑。
-4. 与现有 List<GetActivityListVO> 取交集。
+4. 与现有 `List<GetActivityListVO>` 取交集。
 5. 若 taskType 为空，保留原逻辑。
 
 ## 参考代码/表结构
@@ -686,7 +679,7 @@ docs/
 9. skill-creator: https://github.com/anthropics/skills/tree/main/skills/skill-creator, 创建、修改和优化 Skill
 10. ccstatusline: https://github.com/sirmalloc/ccstatusline, 高度可定制的 Claude Code CLI 状态栏工具
 
-装好之后在任意会话里跑 `/health`，它会自动识别项目复杂度，对 `CLAUDE.md`、`rules`、`skills`、`hooks`、`allowedTools` 和实际行为模式各跑一遍检查，输出一份优先级报告：需要立刻修 / 结构性问题 / 可以慢慢做。
+claude-health插件装好之后在任意会话里跑 `/health`，它会自动识别项目复杂度，对 `CLAUDE.md`、`rules`、`skills`、`hooks`、`allowedTools` 和实际行为模式各跑一遍检查，输出一份优先级报告：需要立刻修 / 结构性问题 / 可以慢慢做。
 
 ## 参考文章
 1. [如何用AI Coding和Claude Code提升开发效率？看我的全流程复盘](https://mp.weixin.qq.com/s/6j-MqSrJz5YlKAe2LZW6pg)

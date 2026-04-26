@@ -3,12 +3,22 @@ import recoTheme from "vuepress-theme-reco";
 import { viteBundler } from '@vuepress/bundler-vite'
 import { webpackBundler } from '@vuepress/bundler-webpack'
 
+const excludeProjectPlugin = {
+  name: 'exclude-project-plugin',
+  onInitialized(app) {
+    app.pages = app.pages.filter(
+      (page) => !page.filePathRelative?.startsWith('blogs/Project/')
+    );
+  },
+};
+
 export default defineUserConfig({
   title: "orbisz-Blog",
   description: "Carpe diem",
   head: [
     ['link', { rel: 'icon', href: '/favicon1.ico' }]
   ],
+  plugins: [excludeProjectPlugin],
   bundler: viteBundler(),
   // bundler: webpackBundler(),
   theme: recoTheme({
@@ -25,14 +35,14 @@ export default defineUserConfig({
       { text: '留言板', link: '/docs/message-board', icon: 'IconChat' },
       { text: 'CSDN', link: 'https://blog.csdn.net/hywzxy', icon:'IconCSDN' },
       { text: 'Github', link: 'https://github.com/orbisz', icon:'IconGithub' },
-      {
-        text: "项目体验",
-        children: [
-          { text: "幸运营销汇", link: "http://117.72.164.204:3000/?userId=zxy&activityId=100301" },
-          { text: "Ai-Agent 智能体 ", link: "http://101.43.191.204" },
-          //{ text: "vuepress-theme-reco", link: "/blogs/other/guide" },
-        ],
-      },
+      //{
+      //  text: "项目体验",
+      //  children: [
+      //    { text: "幸运营销汇", link: "http://117.72.164.204:3000/?userId=zxy&activityId=100301" },
+      //    { text: "Ai-Agent 智能体 ", link: "http://101.43.191.204" },
+      //    //{ text: "vuepress-theme-reco", link: "/blogs/other/guide" },
+      //  ],
+      //},
       //{ text: "分类", link: "/categories/backend", icon: "Category" },
       //{ text: "Home", link: "/" },
       //{ text: "Categories", link: "/categories/reco/1.md.html" },
