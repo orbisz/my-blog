@@ -10,6 +10,8 @@ categories:
 
 ## Harness Engineering
 >Harness 一词来源于马具。马是强大的 AI 模型，但因其黑盒属性具有不可控性；Harness 是指缰绳、马鞍和护具等，是工程管理学；骑手是人类工程师，明确意图、设计环境和构建反馈回路。
+> 
+> Harness 是为了把一台「聪明但没有工程常识的非确定性引擎」嵌进「确定的业务流水线」而设计的物理控制面。
 >
 
 Mitchell Hashimoto 对于 Mitchell Hashimoto 的定义只有一句话：

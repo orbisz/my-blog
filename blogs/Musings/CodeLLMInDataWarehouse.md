@@ -57,6 +57,31 @@ MCP工具可以充当Code LLM 与企业内部数据资产之间的桥梁。通�
 
 在工程落地中，MCP工具可以实现与主流AI IDE的无缝集成。开发者在 IDE 中只需输入自然语言指令（如：“读这个表试试：xxx.table_name”），底层大模型即可自动路由至 Galaxy MCP，完成鉴权、API 调用与结果解析的闭环。这标志着数仓开发正式迈入 Agentic 时代。
 
+## Ontological Engineering
+借鉴Palantir的核心技术哲学：不直接让模型理解Raw Data，而是在数据之上建立"语义层"。
+
+### 三层架构
+- 语义层：定义业务世界的“名词”————对象、属性和关系，统一不同系统的数据语义。
+- 数据流转层：定义业务世界的“动词”————操作、动作与流程，涵盖数据同步链路和业务函数调用。
+- 智能决策层：定义规则、权限、Agent与模型的绑定关系，让AI得以进行推理和智能决策。
+
+### 三大核心要素
+- **对象（Objects）**：数据不再是冰冷的表、行、列，而是带有属性、行为、历史和约束的业务实体。例如，数据库实例不再是`pg_stat`表中的一行，而是一个完整的`DatabaseInstance`对象，拥有CPU核数、所属团队、当前状态、历史告警等丰富属性。
+- **链接（Links）**：对象间关系被显式定义，构成知识图谱。`Database → Deploys_To → Cloud Region、Service → Depends_On → Database`————这些关系能让Agent像人类专家一样沿拓扑结构多跳推理。
+- **动作（Actions）**：预定义的可执行业务操作，如`RollbackDeployment()`。每个动作都有明确的输入参数、前置条件和执行效果。Actions本质是标准化API调用，Agent直接调用即可，安全高效。
+
+### 从RAG到OAG：检索范式的代际提升
+这三者结合，为Agent提供统一的结构化上下文。我们将这种检索方式称为OAG（Ontology-Augmented Generation），区别于传统RAG：
+
+| 特性         | 传统RAG         | OAG                         |
+| ------------ | --------------- | --------------------------- |
+| 检索内容     | 零散文本片段    | 结构化实体及关系网络        |
+| 上下文质量   | 噪声大、关联弱  | 精准、完整、可追溯          |
+| 推理能力     | 基于文本猜测    | 基于拓扑多跳推理            |
+| 可解释性     | 低              | 高                          |
+
+传统RAG返回零散文本片段，上下文噪声大；OAG检索结构化实体及其关系网络，为LLM提供精准、完整、可追溯的上下文。
 ## 参考
 1. [Claude在得物App数仓的深度集成与效能演进](https://mp.weixin.qq.com/s/A3OfM2Gwx9XP3BhCfzbZ3A)
 2. 数据分析Agent白皮书：AI重构数据消费
+3. [Ontological Engineering：基于PolarDB-PG智能本体引擎实现“数据驱动”到“决策中心”](https://mp.weixin.qq.com/s/6iI1gIW4HGh3G5FvM5zcWA?poc_token=HDMx62mji05bVEkoZ-8uyJ4Hy5kVAmWZal2gtllr)

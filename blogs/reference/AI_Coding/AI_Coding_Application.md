@@ -690,3 +690,4 @@ claude-health插件装好之后在任意会话里跑 `/health`，它会自动识
 6. [从传统编程转向大模型编程](https://mp.weixin.qq.com/s/S9XBcdof43MdwYd2tXGl1Q)
 7. [AI 编程效率提升指南：优化提示词，实现 AI 辅助编码高质量输出](https://articles.zsxq.com/id_p2umki6xnmca.html)
 8. [你不知道的 Claude Code：架构、治理与工程实践](https://tw93.fun/2026-03-12/claude.html)
+9. [从聊天窗口到多 Agent 控制台：一次 AI 编程协作范式的转移](https://mp.weixin.qq.com/s/0vIHvlZCdq2TZ1OBGUgW3w)
